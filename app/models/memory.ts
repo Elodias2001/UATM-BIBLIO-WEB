@@ -28,9 +28,9 @@ export default class Memory extends BaseModel {
   @column()
   declare filePath: string | null
 
-  @column.dateTime({ autoCreate: true })
+  @column.date({ autoCreate: true })
   declare createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.date({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }
