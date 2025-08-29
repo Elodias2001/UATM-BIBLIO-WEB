@@ -11,8 +11,13 @@ export default class extends BaseSchema {
       table.string('password').notNullable()
       table.boolean('is_admin').notNullable().defaultTo(false)
 
-      table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').nullable()
+      table.timestamp('created_at', { useTz: true }).defaultTo(this.now())
+      table.timestamp('updated_at', { useTz: true }).defaultTo(this.now())
+      // table.timestamp('created_at')
+      // table.timestamp('updated_at')
+      // table.timestamps(true, true)
+      // table.timestamp('created_at').notNullable()
+      // table.timestamp('updated_at').nullable()
     })
   }
 

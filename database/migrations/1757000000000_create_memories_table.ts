@@ -14,8 +14,12 @@ export default class extends BaseSchema {
       table.text('abstract').nullable()
       table.string('file_path').nullable()
 
-      table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').nullable()
+      table.timestamp('created_at', { useTz: true }).defaultTo(this.now())
+      table.timestamp('updated_at', { useTz: true }).defaultTo(this.now())
+      // table.timestamp('created_at').notNullable()
+      // table.timestamp('updated_at').nullable()
+      // table.timestamp('created_at')
+      // table.timestamp('updated_at')
     })
   }
 
