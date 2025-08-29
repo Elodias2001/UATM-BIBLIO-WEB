@@ -19,14 +19,14 @@
           et thèses disponibles à la bibliothèque de l'UATM.
         </p>
 
-        <form action="/search" method="GET" class="mt-4">
+        <form id="heroSearchForm" class="mt-4">
           <div class="flex flex-col sm:flex-row gap-3 sm:gap-2">
             <div class="relative flex-1">
               <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"></i>
-              <input type="text" name="q" placeholder="Rechercher un mémoire (mots-clés)" value="{{ request.input('q', '') }}"
+              <input type="text" id="heroSearchInput" name="q" placeholder="Rechercher un mémoire (mots-clés)" value="{{ request.input('q', '') }}"
                      class="w-full pl-9 pr-4 py-3 rounded-md border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500 placeholder-neutral-400" />
             </div>
-            <select name="filiere" class="min-w-[160px] rounded-md border border-neutral-300 py-3 px-3 text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500">
+            <select id="heroFiliereSelect" name="filiere" class="min-w-[160px] rounded-md border border-neutral-300 py-3 px-3 text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500">
               <option value="">Toutes filières</option>
               <option value="Informatique" {{ request.input('filiere') === 'Informatique' ? 'selected' : '' }}>Informatique</option>
               <option value="Gestion" {{ request.input('filiere') === 'Gestion' ? 'selected' : '' }}>Gestion</option>
@@ -40,6 +40,19 @@
             </button>
           </div>
         </form>
+
+        <!-- Résultats de recherche en temps réel -->
+        <div id="heroSearchResults" class="mt-6 hidden">
+          <div class="bg-white rounded-lg border border-neutral-200 shadow-sm">
+            <div class="p-4 border-b border-neutral-200">
+              <h3 class="text-lg font-semibold text-neutral-900">Résultats de recherche</h3>
+              <p class="text-sm text-neutral-600">Tapez pour rechercher des mémoires</p>
+            </div>
+            <div id="heroResultsList" class="divide-y divide-neutral-200">
+              <!-- Les résultats s'afficheront ici -->
+            </div>
+          </div>
+        </div>
 
         <div class="flex flex-wrap items-center gap-3 text-sm text-neutral-500">
           <span class="font-semibold text-neutral-700">Populaire:</span>
@@ -77,4 +90,108 @@
       </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchForm = document.getElementById('heroSearchForm');
+      const searchInput = document.getElementById('heroSearchInput');
+      const filiereSelect = document.getElementById('heroFiliereSelect');
+      const searchResults = document.getElementById('heroSearchResults');
+      const resultsList = document.getElementById('heroResultsList');
+
+      let searchTimeout;
+
+      // Recherche en temps réel
+      searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          performSearch();
+        }, 300);
+      });
+
+      // Recherche lors du changement de filière
+      filiereSelect.addEventListener('change', function() {
+        performSearch();
+      });
+
+      // Soumission du formulaire
+      searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        performSearch();
+      });
+
+      async function performSearch() {
+        const query = searchInput.value.trim();
+        const filiere = filiereSelect.value;
+
+        if (!query && !filiere) {
+          searchResults.classList.add('hidden');
+          return;
+        }
+
+        try {
+          // Utiliser la route GET avec des paramètres de requête pour plus de simplicité
+          const params = new URLSearchParams();
+          if (query) params.append('q', query);
+          if (filiere) params.append('filiere', filiere);
+
+          const response = await fetch(`/search?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          displayResults(data.results, query, filiere);
+        } catch (error) {
+          console.error('Erreur de recherche:', error);
+          // Afficher un message d'erreur à l'utilisateur
+          resultsList.innerHTML = `
+            <div class="p-4 text-center text-error-600">
+              <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+              Erreur lors de la recherche. Veuillez réessayer.
+            </div>
+          `;
+          searchResults.classList.remove('hidden');
+        }
+      }
+
+      function displayResults(results, query, filiere) {
+        if (results.length === 0) {
+          resultsList.innerHTML = `
+            <div class="p-4 text-center text-neutral-500">
+              Aucun résultat trouvé pour "${query}"${filiere ? ` dans ${filiere}` : ''}
+            </div>
+          `;
+        } else {
+          resultsList.innerHTML = results.map(memory => `
+            <div class="p-4 hover:bg-neutral-50">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="font-semibold text-neutral-900 text-sm">${memory.title}</div>
+                  <div class="text-xs text-neutral-600">${memory.authors || 'Auteur non spécifié'} — ${memory.year || 'Année non spécifiée'} — ${memory.filiere || 'Filière non spécifiée'}</div>
+                  ${memory.abstract ? `<p class="mt-2 text-sm text-neutral-700 line-clamp-2">${memory.abstract.substring(0, 150)}...</p>` : ''}
+                  ${memory.keywords ? `
+                    <div class="mt-2 flex flex-wrap gap-1 text-xs">
+                      ${memory.keywords.split(',').map(tag => `<span class="px-2 py-1 rounded bg-primary-50 text-primary-700 border border-primary-100">${tag.trim()}</span>`).join('')}
+                    </div>
+                  ` : ''}
+                </div>
+                <a href="/search?q=${encodeURIComponent(query)}&filiere=${encodeURIComponent(filiere)}" class="text-primary-600 hover:text-primary-700 text-sm ml-4">
+                  Voir plus →
+                </a>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        searchResults.classList.remove('hidden');
+      }
+    });
+  </script>
 </section>

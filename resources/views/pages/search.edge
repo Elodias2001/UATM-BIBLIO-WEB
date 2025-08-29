@@ -4,10 +4,55 @@
   @include('components/header')
 
   <div class="container mx-auto py-10">
+    <!-- Formulaire de recherche -->
+    <div class="bg-white rounded-lg border border-neutral-200 p-6 mb-8">
+      <h2 class="text-lg font-semibold text-neutral-900 mb-4">Recherche avancée</h2>
+      <form action="/search" method="GET" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Mots-clés</label>
+            <input type="text" name="q" value="{{ q || '' }}" placeholder="Rechercher par titre, auteur, mots-clés..."
+                   class="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Filière</label>
+            <select name="filiere" class="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500">
+              <option value="">Toutes filières</option>
+              <option value="Informatique" {{ filiere === 'Informatique' ? 'selected' : '' }}>Informatique</option>
+              <option value="Gestion" {{ filiere === 'Gestion' ? 'selected' : '' }}>Gestion</option>
+              <option value="Sciences" {{ filiere === 'Sciences' ? 'selected' : '' }}>Sciences</option>
+              <option value="Économie" {{ filiere === 'Économie' ? 'selected' : '' }}>Économie</option>
+              <option value="Droit" {{ filiere === 'Droit' ? 'selected' : '' }}>Droit</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+            <i class="fa-solid fa-search"></i>
+            Rechercher
+          </button>
+        </div>
+      </form>
+    </div>
+
     <h1 class="text-2xl font-bold text-neutral-900 mb-4">Résultats de recherche</h1>
 
-    @if(!results || results.length === 0)
-      <div class="text-neutral-600">Aucun résultat trouvé.</div>
+    @if(!q && !filiere)
+      <div class="text-center py-12">
+        <div class="text-neutral-400 mb-4">
+          <i class="fa-solid fa-search text-6xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-neutral-700 mb-2">Commencez votre recherche</h3>
+        <p class="text-neutral-600">Utilisez le formulaire ci-dessus pour rechercher des mémoires par mots-clés, auteur, ou filière.</p>
+      </div>
+    @elseif(!results || results.length === 0)
+      <div class="text-center py-12">
+        <div class="text-neutral-400 mb-4">
+          <i class="fa-solid fa-search text-6xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-neutral-700 mb-2">Aucun résultat trouvé</h3>
+        <p class="text-neutral-600">Essayez de modifier vos critères de recherche ou utilisez des termes plus généraux.</p>
+      </div>
     @else
       <ul class="divide-y divide-neutral-200 bg-white border border-neutral-200 rounded-md">
         @each(item in results)
