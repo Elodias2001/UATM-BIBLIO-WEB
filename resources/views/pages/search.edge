@@ -1,0 +1,42 @@
+@layout.main({ title: `Recherche - ${q || ''}` })
+
+@slot('content')
+  @include('components/header')
+
+  <div class="container mx-auto py-10">
+    <h1 class="text-2xl font-bold text-neutral-900 mb-4">Résultats de recherche</h1>
+
+    @if(!results || results.length === 0)
+      <div class="text-neutral-600">Aucun résultat trouvé.</div>
+    @else
+      <ul class="divide-y divide-neutral-200 bg-white border border-neutral-200 rounded-md">
+        @each(item in results)
+          <li class="p-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="font-semibold text-neutral-900">{{ item.title }}</div>
+                <div class="text-sm text-neutral-600">{{ item.authors }} — {{ item.year }} — {{ item.filiere }}</div>
+                <p class="mt-2 text-sm text-neutral-700 line-clamp-3">{{ item.abstract }}</p>
+                @if(item.keywords)
+                  <div class="mt-2 flex flex-wrap gap-2 text-xs">
+                    @each(tag in item.keywords.split(',').map((t) => t.trim()))
+                      <span class="px-2 py-1 rounded bg-primary-50 text-primary-700 border border-primary-100">{{ tag }}</span>
+                    @endeach
+                  </div>
+                @endif
+              </div>
+              @if(item.file_path)
+                <a href="{{ item.file_path }}" class="text-primary-600 hover:text-primary-700 text-sm">Consulter</a>
+              @endif
+            </div>
+          </li>
+        @endeach
+      </ul>
+    @endif
+  </div>
+
+  @include('components/footer')
+@endslot
+
+@end
+

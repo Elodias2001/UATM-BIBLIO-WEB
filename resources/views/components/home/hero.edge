@@ -23,14 +23,16 @@
           <div class="flex flex-col sm:flex-row gap-3 sm:gap-2">
             <div class="relative flex-1">
               <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"></i>
-              <input type="text" name="q" placeholder="Rechercher un mémoire (mots-clés)"
+              <input type="text" name="q" placeholder="Rechercher un mémoire (mots-clés)" value="{{ request.input('q', '') }}"
                      class="w-full pl-9 pr-4 py-3 rounded-md border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500 placeholder-neutral-400" />
             </div>
             <select name="filiere" class="min-w-[160px] rounded-md border border-neutral-300 py-3 px-3 text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500">
               <option value="">Toutes filières</option>
-              <option>Informatique</option>
-              <option>Gestion</option>
-              <option>Sciences</option>
+              <option value="Informatique" {{ request.input('filiere') === 'Informatique' ? 'selected' : '' }}>Informatique</option>
+              <option value="Gestion" {{ request.input('filiere') === 'Gestion' ? 'selected' : '' }}>Gestion</option>
+              <option value="Sciences" {{ request.input('filiere') === 'Sciences' ? 'selected' : '' }}>Sciences</option>
+              <option value="Économie" {{ request.input('filiere') === 'Économie' ? 'selected' : '' }}>Économie</option>
+              <option value="Droit" {{ request.input('filiere') === 'Droit' ? 'selected' : '' }}>Droit</option>
             </select>
             <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-md bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-sm">
               <i class="fa-solid fa-search"></i>
@@ -59,18 +61,16 @@
               <a href="#nouveautes" class="text-xs text-primary-600 hover:text-primary-700">Tout voir</a>
             </div>
             <ul class="divide-y divide-neutral-200">
-              <li class="p-4 hover:bg-neutral-50">
-                <div class="text-sm font-semibold text-neutral-800">Optimisation des réseaux SDN</div>
-                <div class="text-xs text-neutral-500">Auteur: A. Traoré — 2024</div>
-              </li>
-              <li class="p-4 hover:bg-neutral-50">
-                <div class="text-sm font-semibold text-neutral-800">Détection de fraudes par IA</div>
-                <div class="text-xs text-neutral-500">Auteur: M. Sow — 2023</div>
-              </li>
-              <li class="p-4 hover:bg-neutral-50">
-                <div class="text-sm font-semibold text-neutral-800">Marketing digital dans l'enseignement</div>
-                <div class="text-xs text-neutral-500">Auteur: F. Diallo — 2022</div>
-              </li>
+              @each(memory in recentMemories)
+                <li class="p-4 hover:bg-neutral-50">
+                  <div class="text-sm font-semibold text-neutral-800">{{ memory.title }}</div>
+                  <div class="text-xs text-neutral-500">Auteur: {{ memory.authors }} — {{ memory.year }}</div>
+                </li>
+              @else
+                <li class="p-4 text-center text-neutral-500 text-sm">
+                  Aucun mémoire disponible
+                </li>
+              @endeach
             </ul>
           </div>
         </div>
