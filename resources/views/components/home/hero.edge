@@ -1,0 +1,80 @@
+<section id="recherche" class="relative bg-gradient-to-br from-primary-50 via-white to-accent-50 overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary-100 blur-3xl opacity-60"></div>
+    <div class="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-accent-100 blur-3xl opacity-60"></div>
+  </div>
+
+  <div class="container mx-auto relative py-14 md:py-24">
+    <div class="grid md:grid-cols-2 gap-10 items-center">
+      <div class="space-y-6 animate-slide-up">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-100 text-primary-700 text-xs font-semibold">
+          <i class="fa-solid fa-graduation-cap"></i>
+          Moteur de recherche de mémoires
+        </span>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-neutral-900 leading-tight">
+          Trouvez rapidement les mémoires universitaires par mots-clés
+        </h1>
+        <p class="text-neutral-600 text-base md:text-lg">
+          Recherchez par titre, auteur, année, filière ou mots-clés et accédez aux mémoires
+          et thèses disponibles à la bibliothèque de l'UATM.
+        </p>
+
+        <form action="/search" method="GET" class="mt-4">
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-2">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"></i>
+              <input type="text" name="q" placeholder="Rechercher un mémoire (mots-clés)"
+                     class="w-full pl-9 pr-4 py-3 rounded-md border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500 placeholder-neutral-400" />
+            </div>
+            <select name="filiere" class="min-w-[160px] rounded-md border border-neutral-300 py-3 px-3 text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500">
+              <option value="">Toutes filières</option>
+              <option>Informatique</option>
+              <option>Gestion</option>
+              <option>Sciences</option>
+            </select>
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-md bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-sm">
+              <i class="fa-solid fa-search"></i>
+              Rechercher
+            </button>
+          </div>
+        </form>
+
+        <div class="flex flex-wrap items-center gap-3 text-sm text-neutral-500">
+          <span class="font-semibold text-neutral-700">Populaire:</span>
+          <a href="/search?q=IA" class="px-2 py-1 rounded bg-neutral-100 hover:bg-neutral-200 transition">IA</a>
+          <a href="/search?q=Blockchain" class="px-2 py-1 rounded bg-neutral-100 hover:bg-neutral-200 transition">Blockchain</a>
+          <a href="/search?q=Réseaux" class="px-2 py-1 rounded bg-neutral-100 hover:bg-neutral-200 transition">Réseaux</a>
+          <a href="/search?q=Marketing" class="px-2 py-1 rounded bg-neutral-100 hover:bg-neutral-200 transition">Marketing</a>
+        </div>
+      </div>
+
+      <div class="relative hidden md:block animate-fade-in">
+        <div class="relative mx-auto max-w-md">
+          <div class="rounded-xl border border-neutral-200 shadow-md overflow-hidden bg-white">
+            <div class="p-4 border-b border-neutral-200 flex items-center justify-between">
+              <div class="flex items-center gap-2 text-primary-700 font-semibold">
+                <i class="fa-solid fa-book"></i>
+                Dernières mémoires
+              </div>
+              <a href="#nouveautes" class="text-xs text-primary-600 hover:text-primary-700">Tout voir</a>
+            </div>
+            <ul class="divide-y divide-neutral-200">
+              <li class="p-4 hover:bg-neutral-50">
+                <div class="text-sm font-semibold text-neutral-800">Optimisation des réseaux SDN</div>
+                <div class="text-xs text-neutral-500">Auteur: A. Traoré — 2024</div>
+              </li>
+              <li class="p-4 hover:bg-neutral-50">
+                <div class="text-sm font-semibold text-neutral-800">Détection de fraudes par IA</div>
+                <div class="text-xs text-neutral-500">Auteur: M. Sow — 2023</div>
+              </li>
+              <li class="p-4 hover:bg-neutral-50">
+                <div class="text-sm font-semibold text-neutral-800">Marketing digital dans l'enseignement</div>
+                <div class="text-xs text-neutral-500">Auteur: F. Diallo — 2022</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
