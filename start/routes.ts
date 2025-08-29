@@ -15,12 +15,15 @@ import { middleware } from './kernel.js'
 router.get('/', [HomeController, 'index'])
 
 // Public search route (no auth required)
-router.get('/search', [SearchController, 'index'])
+router.get('/search', [SearchController, 'index']).as('search')
 
 // Admin auth routes
-router.get('/login', [AdminAuthController, 'showLogin']).use(middleware.guest())
-router.post('/login', [AdminAuthController, 'login']).use(middleware.guest())
-router.post('/logout', [AdminAuthController, 'logout']).use(middleware.auth())
+router.get('/login', [AdminAuthController, 'showLogin']).use(middleware.guest()).as('login.page')
+router.post('/login', [AdminAuthController, 'login']).use(middleware.guest()).as('auth.login')
+router.post('/logout', [AdminAuthController, 'logout']).use(middleware.auth()).as('auth.logout')
 
 // Admin dashboard route
-router.get('/admin', [AdminAuthController, 'dashboard']).use(middleware.auth())
+router
+  .get('/admin', [AdminAuthController, 'dashboard'])
+  .use(middleware.auth())
+  .as('admin.dashboard')

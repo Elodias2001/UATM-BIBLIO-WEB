@@ -18,7 +18,7 @@
               <span class="text-xs text-primary-600 bg-primary-100 px-2 py-1 rounded-full">Admin</span>
             </div>
             <form action="/logout" method="POST" class="inline">
-              @csrf()
+              {{ csrfField() }}
               <button type="submit" class="text-sm text-neutral-600 hover:text-primary-600 transition-colors">
                 <i class="fa-solid fa-sign-out-alt"></i>
                 <span class="ml-1">Déconnexion</span>

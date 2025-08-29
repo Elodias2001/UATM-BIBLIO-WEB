@@ -1,3 +1,4 @@
+@eval(await auth.check())
 <header class="w-full bg-white/90 backdrop-blur border-b border-neutral-200">
   <div class="container mx-auto">
     <div class="flex items-center justify-between py-4">
@@ -25,8 +26,8 @@
               <span class="text-sm font-medium text-primary-700">{{ auth.user.fullName || auth.user.email }}</span>
               <span class="text-xs text-primary-600 bg-primary-100 px-2 py-1 rounded-full">Admin</span>
             </div>
-            <form action="/logout" method="POST" class="inline">
-              @csrf()
+            <form action="{{route('auth.logout')}}" method="POST" class="inline">
+              {{ csrfField() }}
               <button type="submit" class="text-sm text-neutral-600 hover:text-primary-600 transition-colors">
                 <i class="fa-solid fa-sign-out-alt"></i>
                 <span class="hidden sm:inline ml-1">Déconnexion</span>
@@ -34,7 +35,7 @@
             </form>
           </div>
         @else
-          <a href="/login" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md bg-primary-600 text-white text-sm hover:bg-primary-700 transition-colors">
+          <a href="{{route('login.page')}}" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-md bg-primary-600 text-white text-sm hover:bg-primary-700 transition-colors">
             <i class="fa-solid fa-right-to-bracket text-xs"></i>
             <span>Se connecter</span>
           </a>
