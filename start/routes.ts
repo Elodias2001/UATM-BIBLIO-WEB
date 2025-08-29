@@ -9,6 +9,7 @@
 const HomeController = () => import('#controllers/home_controller')
 const SearchController = () => import('#controllers/search_controller')
 const AdminAuthController = () => import('#controllers/admin_auth_controller')
+const MemoryController = () => import('#controllers/admin/memory_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
@@ -27,3 +28,17 @@ router
   .get('/admin', [AdminAuthController, 'dashboard'])
   .use(middleware.auth())
   .as('admin.dashboard')
+
+// Admin memory management routes
+router
+  .group(() => {
+    router.get('/', [MemoryController, 'index']).as('admin.memories.index')
+    router.get('/create', [MemoryController, 'create']).as('admin.memories.create')
+    router.post('/', [MemoryController, 'store']).as('admin.memories.store')
+    router.get('/:id/details', [MemoryController, 'show']).as('admin.memories.show')
+    router.get('/:id/edit', [MemoryController, 'edit']).as('admin.memories.edit')
+    router.post('/:id/update', [MemoryController, 'update']).as('admin.memories.update')
+    router.post('/:id/delete', [MemoryController, 'destroy']).as('admin.memories.destroy')
+  })
+  .prefix('/admin/memories')
+  .use(middleware.auth())
