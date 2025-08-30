@@ -23,6 +23,9 @@ export default class MemoryController {
     const data = await request.validateUsing(createMemoryValidator)
 
     try {
+      console.log('Données reçues:', data)
+      console.log('Fichier reçu:', data.file)
+
       // Gérer l'upload du fichier
       let filePath = null
       let originalFilename = null
@@ -42,13 +45,20 @@ export default class MemoryController {
         const fileName = `${randomUUID()}${fileExtension}`
         const fullPath = join(uploadDir, fileName)
         console.log('fullPath', fullPath)
+        console.log('fileName', fileName)
+        console.log('fileExtension', fileExtension)
 
         // Sauvegarder le fichier
+        console.log('Tentative de sauvegarde du fichier...')
         await file.move(uploadDir, { name: fileName })
+        console.log('Fichier sauvegardé avec succès')
 
         filePath = `/uploads/memories/${fileName}`
         originalFilename = file.clientName
         fileSize = file.size
+        console.log('filePath final:', filePath)
+        console.log('originalFilename:', originalFilename)
+        console.log('fileSize:', fileSize)
       }
 
       // Créer le mémoire avec les informations du fichier
