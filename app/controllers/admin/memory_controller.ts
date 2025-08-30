@@ -10,6 +10,7 @@ import { existsSync } from 'node:fs'
 export default class MemoryController {
   public async index({ view }: HttpContext) {
     const memories = await Memory.query().orderBy('createdAt', 'desc')
+    console.log('memories', memories)
 
     return view.render('pages/admin/memoires/index', { memories })
   }
