@@ -13,6 +13,8 @@ export default class extends BaseSchema {
       table.text('keywords').nullable()
       table.text('abstract').nullable()
       table.string('file_path').nullable()
+      table.string('original_filename').nullable() // Nom original du fichier
+      table.integer('file_size').nullable() // Taille du fichier en bytes
 
       table.date('created_at').defaultTo(this.now())
       table.date('updated_at').defaultTo(this.now())

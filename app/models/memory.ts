@@ -25,8 +25,14 @@ export default class Memory extends BaseModel {
   @column()
   declare abstract: string | null
 
-  @column()
+  @column({ columnName: 'file_path' })
   declare filePath: string | null
+
+  @column({ columnName: 'original_filename' })
+  declare originalFilename: string | null
+
+  @column({ columnName: 'file_size' })
+  declare fileSize: number | null
 
   @column.date({ autoCreate: true })
   declare createdAt: DateTime

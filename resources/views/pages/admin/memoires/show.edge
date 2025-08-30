@@ -113,12 +113,23 @@
             <div>
               <h3 class="text-sm font-medium text-neutral-500 uppercase tracking-wider mb-2">Fichier</h3>
               @if(memory.filePath)
-                <div class="flex items-center gap-3">
-                  <a href="{{ memory.filePath }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    Consulter le PDF
-                  </a>
-                  <span class="text-sm text-neutral-600">{{ memory.filePath }}</span>
+                <div class="bg-neutral-50 rounded-md p-4 border border-neutral-200">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <i class="fa-solid fa-file-pdf text-3xl text-error-600"></i>
+                      <div>
+                        <p class="font-medium text-neutral-900">{{ memory.originalFilename || 'Fichier PDF' }}</p>
+                        <p class="text-sm text-neutral-600">{{ memory.filePath }}</p>
+                        @if(memory.fileSize)
+                          <p class="text-xs text-neutral-500">{{ (memory.fileSize / 1024 / 1024).toFixed(2) }} MB</p>
+                        @endif
+                      </div>
+                    </div>
+                    <a href="{{ memory.filePath }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+                      <i class="fa-solid fa-external-link-alt"></i>
+                      Consulter le PDF
+                    </a>
+                  </div>
                 </div>
               @else
                 <p class="text-neutral-500">Aucun fichier associé</p>

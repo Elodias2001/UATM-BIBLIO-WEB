@@ -1,6 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Memory from '#models/memory'
 import { createMemoryValidator, updateMemoryValidator } from '#validators/memory'
+import { randomUUID } from 'node:crypto'
+import { join } from 'node:path'
+import { mkdir } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 
 export default class MemoryController {
   public async index({ view }: HttpContext) {
@@ -17,10 +21,51 @@ export default class MemoryController {
     const data = await request.validateUsing(createMemoryValidator)
 
     try {
-      await Memory.create(data)
+      // Gérer l'upload du fichier
+      let filePath = null
+      let originalFilename = null
+      let fileSize = null
+
+      if (data.file) {
+        const file = data.file
+        const uploadDir = join(process.cwd(), 'public', 'uploads', 'memories')
+
+        // Créer le dossier s'il n'existe pas
+        if (!existsSync(uploadDir)) {
+          await mkdir(uploadDir, { recursive: true })
+        }
+
+        // Générer un nom unique pour le fichier
+        const fileExtension = file.extname || '.pdf'
+        const fileName = `${randomUUID()}${fileExtension}`
+        const fullPath = join(uploadDir, fileName)
+        console.log('fullPath', fullPath)
+
+        // Sauvegarder le fichier
+        await file.move(uploadDir, { name: fileName })
+
+        filePath = `/uploads/memories/${fileName}`
+        originalFilename = file.clientName
+        fileSize = file.size
+      }
+
+      // Créer le mémoire avec les informations du fichier
+      await Memory.create({
+        title: data.title,
+        authors: data.authors,
+        year: data.year,
+        filiere: data.filiere,
+        keywords: data.keywords,
+        abstract: data.abstract,
+        filePath,
+        originalFilename,
+        fileSize,
+      })
+
       session.flash('success', 'Mémoire créé avec succès!')
       return response.redirect().toRoute('admin.memories.index')
     } catch (error) {
+      console.error('Erreur création mémoire:', error)
       session.flash('error', 'Erreur lors de la création du mémoire')
       return response.redirect().back()
     }
@@ -41,11 +86,44 @@ export default class MemoryController {
     const data = await request.validateUsing(updateMemoryValidator)
 
     try {
-      memory.merge(data)
+      // Gérer l'upload du fichier si un nouveau fichier est fourni
+      if (data.file) {
+        const file = data.file
+        const uploadDir = join(process.cwd(), 'public', 'uploads', 'memories')
+
+        // Créer le dossier s'il n'existe pas
+        if (!existsSync(uploadDir)) {
+          await mkdir(uploadDir, { recursive: true })
+        }
+
+        // Générer un nom unique pour le fichier
+        const fileExtension = file.extname || '.pdf'
+        const fileName = `${randomUUID()}${fileExtension}`
+
+        // Sauvegarder le nouveau fichier
+        await file.move(uploadDir, { name: fileName })
+
+        // Mettre à jour les informations du fichier
+        memory.filePath = `/uploads/memories/${fileName}`
+        memory.originalFilename = file.clientName
+        memory.fileSize = file.size
+      }
+
+      // Mettre à jour les autres champs
+      memory.merge({
+        title: data.title,
+        authors: data.authors,
+        year: data.year,
+        filiere: data.filiere,
+        keywords: data.keywords,
+        abstract: data.abstract,
+      })
+
       await memory.save()
       session.flash('success', 'Mémoire mis à jour avec succès!')
       return response.redirect().toRoute('admin.memories.show', { id: memory.id })
     } catch (error) {
+      console.error('Erreur mise à jour mémoire:', error)
       session.flash('error', 'Erreur lors de la mise à jour du mémoire')
       return response.redirect().back()
     }

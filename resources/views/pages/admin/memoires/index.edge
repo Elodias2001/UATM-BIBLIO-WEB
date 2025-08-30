@@ -72,6 +72,12 @@
                           {{ memory.keywords.split(',').slice(0, 3).join(', ') }}{{ memory.keywords.split(',').length > 3 ? '...' : '' }}
                         </div>
                       @endif
+                      @if(memory.filePath)
+                        <div class="flex items-center gap-2 mt-2">
+                          <i class="fa-solid fa-file-pdf text-xs text-error-600"></i>
+                          <span class="text-xs text-neutral-600">{{ memory.originalFilename || 'Fichier PDF' }}</span>
+                        </div>
+                      @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
                       {{ memory.authors || 'Non spécifié' }}
