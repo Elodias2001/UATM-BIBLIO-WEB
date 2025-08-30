@@ -47,10 +47,10 @@
       <!-- Memories Table -->
       <div class="bg-white rounded-lg border border-neutral-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-neutral-200">
-          <h3 class="text-lg font-semibold text-neutral-900">Mémoires ({{ memories.total || 0 }})</h3>
+          <h3 class="text-lg font-semibold text-neutral-900">Mémoires ({{ memories.length || 0 }})</h3>
         </div>
 
-        @if(memories && memories.data && memories.data.length > 0)
+        @if(memories && memories.length > 0)
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-neutral-200">
               <thead class="bg-neutral-50">
@@ -63,7 +63,7 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-neutral-200">
-                @each(memory in memories.data)
+                @each(memory in memories)
                   <tr class="hover:bg-neutral-50">
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="text-sm font-medium text-neutral-900">{{ memory.title }}</div>
@@ -110,29 +110,7 @@
             </table>
           </div>
 
-          <!-- Pagination -->
-          @if(memories.lastPage > 1)
-            <div class="px-6 py-4 border-t border-neutral-200">
-              <div class="flex items-center justify-between">
-                <div class="text-sm text-neutral-700">
-                  Affichage de {{ memories.from }} à {{ memories.to }} sur {{ memories.total }} résultats
-                </div>
-                <div class="flex items-center gap-2">
-                  @if(memories.currentPage > 1)
-                    <a href="?page={{ memories.currentPage - 1 }}" class="px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 border border-neutral-300 rounded-md">
-                      Précédent
-                    </a>
-                  @endif
 
-                  @if(memories.currentPage < memories.lastPage)
-                    <a href="?page={{ memories.currentPage + 1 }}" class="px-3 py-2 text-sm text-neutral-600 hover:text-neutral-900 border border-neutral-300 rounded-md">
-                      Suivant
-                    </a>
-                  @endif
-                </div>
-              </div>
-            </div>
-          @endif
         @else
           <div class="px-6 py-12 text-center">
             <div class="text-neutral-400 mb-4">

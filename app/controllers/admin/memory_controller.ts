@@ -4,7 +4,7 @@ import { createMemoryValidator, updateMemoryValidator } from '#validators/memory
 
 export default class MemoryController {
   public async index({ view }: HttpContext) {
-    const memories = await Memory.query().orderBy('createdAt', 'desc').paginate(1, 20)
+    const memories = await Memory.query().orderBy('createdAt', 'desc')
 
     return view.render('pages/admin/memoires/index', { memories })
   }
