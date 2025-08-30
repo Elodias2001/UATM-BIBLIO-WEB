@@ -36,7 +36,6 @@
         <div class="bg-white rounded-lg border border-neutral-200 p-6">
           <form action="{{route('admin.memories.update', { id: memory.id })}}" method="POST" class="space-y-6">
             {{ csrfField() }}
-            @method('PUT')
 
             <!-- Title -->
             <div>
