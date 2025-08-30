@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto'
 import { join } from 'node:path'
 import { mkdir } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
+// import { DateTime } from 'luxon'
 
 export default class MemoryController {
   public async index({ view }: HttpContext) {
@@ -60,6 +61,8 @@ export default class MemoryController {
         filePath,
         originalFilename,
         fileSize,
+        // createdAt: DateTime.now(),
+        // updatedAt: DateTime.now(),
       })
 
       session.flash('success', 'Mémoire créé avec succès!')
@@ -117,6 +120,7 @@ export default class MemoryController {
         filiere: data.filiere,
         keywords: data.keywords,
         abstract: data.abstract,
+        // updatedAt: DateTime.now(),
       })
 
       await memory.save()

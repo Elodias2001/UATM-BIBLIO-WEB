@@ -34,9 +34,9 @@ export default class Memory extends BaseModel {
   @column({ columnName: 'file_size' })
   declare fileSize: number | null
 
-  @column.date({ autoCreate: true })
+  @column.dateTime()
   declare createdAt: DateTime
 
-  @column.date({ autoCreate: true, autoUpdate: true })
+  @column.dateTime()
   declare updatedAt: DateTime | null
 }

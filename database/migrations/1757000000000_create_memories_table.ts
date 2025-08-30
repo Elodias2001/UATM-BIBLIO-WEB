@@ -16,8 +16,8 @@ export default class extends BaseSchema {
       table.string('original_filename').nullable() // Nom original du fichier
       table.integer('file_size').nullable() // Taille du fichier en bytes
 
-      table.date('created_at').defaultTo(this.now())
-      table.date('updated_at').defaultTo(this.now())
+      table.timestamp('created_at').defaultTo(this.now())
+      table.timestamp('updated_at').defaultTo(this.now())
     })
   }
 

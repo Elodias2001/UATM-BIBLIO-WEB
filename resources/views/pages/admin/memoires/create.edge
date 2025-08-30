@@ -34,7 +34,7 @@
 
         <!-- Form -->
         <div class="bg-white rounded-lg border border-neutral-200 p-6">
-          <form action="{{route('admin.memories.store')}}" method="POST" class="space-y-6">
+          <form action="{{route('admin.memories.store')}}" method="POST" enctype="multipart/form-data" class="space-y-6">
             {{ csrfField() }}
 
             <!-- Title -->
@@ -131,7 +131,7 @@
               <a href="{{route('admin.memories.index')}}" class="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-900 border border-neutral-300 rounded-md transition-colors">
                 Annuler
               </a>
-              <button type="submit" class="inline-flex items-center gap-2 px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
+              <button type="submit" id="submitBtn" disabled class="inline-flex items-center gap-2 px-6 py-2 bg-neutral-400 text-white rounded-md cursor-not-allowed transition-colors">
                 <i class="fa-solid fa-save"></i>
                 Créer le mémoire
               </button>
@@ -141,6 +141,98 @@
       </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileInput = document.getElementById('file');
+      const submitBtn = document.getElementById('submitBtn');
+      const uploadArea = document.querySelector('.border-dashed');
+      const uploadIcon = uploadArea.querySelector('.fa-cloud-upload-alt');
+      const uploadText = uploadArea.querySelector('.text-center');
+
+      // Fonction pour activer/désactiver le bouton
+      function updateSubmitButton() {
+        const file = fileInput.files[0];
+        if (file && file.type === 'application/pdf') {
+          submitBtn.disabled = false;
+          submitBtn.className = 'inline-flex items-center gap-2 px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors';
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.className = 'inline-flex items-center gap-2 px-6 py-2 bg-neutral-400 text-white rounded-md cursor-not-allowed transition-colors';
+        }
+      }
+
+      // Écouter les changements de fichier
+      fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+
+        if (file) {
+          if (file.type === 'application/pdf') {
+            // Fichier valide
+            uploadArea.className = 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-success-300 border-dashed rounded-md bg-success-50 transition-colors';
+            uploadIcon.className = 'fa-solid fa-check-circle text-4xl text-success-600';
+
+            // Mettre à jour le texte
+            uploadText.innerHTML = `
+              <div class="space-y-1 text-center">
+                <i class="fa-solid fa-check-circle text-4xl text-success-600"></i>
+                <div class="text-sm text-success-700 font-medium">Fichier sélectionné</div>
+                <div class="text-xs text-success-600">${file.name}</div>
+                <div class="text-xs text-success-500">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+              </div>
+            `;
+
+            updateSubmitButton();
+          } else {
+            // Type de fichier invalide
+            alert('Veuillez sélectionner un fichier PDF valide.');
+            fileInput.value = '';
+            uploadArea.className = 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 border-dashed rounded-md hover:border-primary-400 transition-colors';
+            uploadIcon.className = 'fa-solid fa-cloud-upload-alt text-4xl text-neutral-400';
+            uploadText.innerHTML = `
+              <div class="space-y-1 text-center">
+                <i class="fa-solid fa-cloud-upload-alt text-4xl text-neutral-400"></i>
+                <div class="flex text-sm text-neutral-600">
+                  <label for="file" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+                    <span>Télécharger un fichier</span>
+                    <input id="file" name="file" type="file" accept=".pdf" class="sr-only" />
+                  </label>
+                  <p class="pl-1">ou glisser-déposer</p>
+                </div>
+                <p class="text-xs text-neutral-500">PDF jusqu'à 10MB</p>
+              </div>
+            `;
+            updateSubmitButton();
+          }
+        }
+      });
+
+      // Drag and drop
+      uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.className = 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-primary-400 border-dashed rounded-md bg-primary-50 transition-colors';
+      });
+
+      uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        if (!uploadArea.contains(e.relatedTarget)) {
+          uploadArea.className = 'mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 border-dashed rounded-md hover:border-primary-400 transition-colors';
+        }
+      });
+
+      uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          fileInput.files = files;
+          fileInput.dispatchEvent(new Event('change'));
+        }
+      });
+
+      // Validation initiale
+      updateSubmitButton();
+    });
+  </script>
 @endslot
 
 @end

@@ -25,9 +25,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare isAdmin: boolean
 
-  @column.date({ autoCreate: true })
+  @column.dateTime()
   declare createdAt: DateTime
 
-  @column.date({ autoCreate: true, autoUpdate: true })
+  @column.dateTime()
   declare updatedAt: DateTime | null
 }
